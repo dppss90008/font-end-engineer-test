@@ -60,7 +60,6 @@ function draw(CornerPosition, Die_X, Die_Y) {
     ctx.beginPath();
 
     if (CornerPosition == "cornerUp") {
-        console.log("Up")
         ctx.arc(h + 5 * step, l + 0 * step, step * 0.3, 2 * Math.PI, 1 * Math.PI)
     } else if (CornerPosition == "cornerDown") {
         ctx.arc(h + 5 * step, l + 10 * step, step * 0.3, 1 * Math.PI, 2 * Math.PI)
@@ -124,9 +123,17 @@ $(document).ready(function() {
 
     // if the form-check, die slider change 
     $('.form-check-input, #DieX_size, #DieY_size').change(function() {
+
         if (this.checked) {
+
+            $(".form-check-input").not(this).removeAttr('checked');
+            $(this).attr('checked', true);
             var CornerPosition = $(this).val()
         }
+
+        // var CornerPosition = $(".form-check-input").checked
+
+        var CornerPosition = $(".form-check-input:checked").val()
 
         var dieXsize = $("#DieX_size").val()
         var dieYsize = $("#DieY_size").val()
