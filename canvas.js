@@ -1,23 +1,57 @@
-var cols = [-4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
-var rows = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
 var step = 50;
 var h = 50;
 var l = 50;
 
-function handleMouseMove(e) {
+function handleMouseMove(e, quadrant) {
     var canvas = document.getElementById("myCanvas");
     BoundingRect = canvas.getBoundingClientRect()
     var offsetX = BoundingRect.left;
     var offsetY = BoundingRect.top;
     mouseX = parseInt(e.clientX - offsetX);
     mouseY = parseInt(e.clientY - offsetY);
-    posX = Math.floor((mouseX - h) / step) - 4;
-    posY = Math.floor((mouseY - l) / step) - 5;
+
+    if (quadrant == 1) {
+        posX = Math.floor((mouseX - h) / step) - 4;
+        posY = -Math.floor((mouseY - l) / step) + 5;
+    } else if (quadrant == 2) {
+        posX = -Math.floor((mouseX - h) / step) + 4;
+        posY = -Math.floor((mouseY - l) / step) + 5;
+    } else if (quadrant == 3) {
+        posX = -Math.floor((mouseX - h) / step) + 4;
+        posY = Math.floor((mouseY - l) / step) - 5;
+    } else if (quadrant == 4) {
+        posX = Math.floor((mouseX - h) / step) - 4;
+        posY = Math.floor((mouseY - l) / step) - 5;
+    }
     $("#movelog").html("Coordinate axis of the mouse hover: " + posX + ", " + posY);
 }
 
-function draw(CornerPosition, Die_X, Die_Y) {
+function draw(CornerPosition, Die_X, Die_Y, quadrant) {
 
+    var cols = [-4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+    var rows = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+
+
+    if (quadrant == 1) {
+        for (var i = 0; i < 10; i++) {
+            // cols[i] = cols[i] * -1
+            rows[i] = rows[i] * -1
+        }
+    } else if (quadrant == 2) {
+        for (var i = 0; i < 10; i++) {
+            cols[i] = cols[i] * -1
+            rows[i] = rows[i] * -1
+        }
+
+    } else if (quadrant == 3) {
+        for (var i = 0; i < 10; i++) {
+            cols[i] = cols[i] * -1
+        }
+    } else if (quadrant == 4) {
+        for (var i = 0; i < 10; i++) {
+
+        }
+    }
 
 
     var canvas = document.getElementById("myCanvas");
@@ -108,7 +142,7 @@ function draw(CornerPosition, Die_X, Die_Y) {
     }
 
     $("#myCanvas").mousemove(function(e) {
-        handleMouseMove(e);
+        handleMouseMove(e, quadrant);
     });
 
 }
@@ -116,30 +150,22 @@ function draw(CornerPosition, Die_X, Die_Y) {
 $(document).ready(function() {
 
     // initialize the canvas and the slider
-    draw("cornerUp", 4, 3)
+    draw("cornerUp", 4, 3, 1)
 
     $("#DieX_size").slider()
     $("#DieY_size").slider()
 
     // if the form-check, die slider change 
-    $('.form-check-input, #DieX_size, #DieY_size').change(function() {
+    $('#corner, #SelectQuadrant, #DieX_size, #DieY_size').change(function() {
 
-        if (this.checked) {
-
-            $(".form-check-input").not(this).removeAttr('checked');
-            $(this).attr('checked', true);
-            var CornerPosition = $(this).val()
-        }
-
-        // var CornerPosition = $(".form-check-input").checked
-
-        var CornerPosition = $(".form-check-input:checked").val()
+        var CornerPosition = $("#corner .form-check-input:checked").val()
+        var SelectQuadrant = $("#SelectQuadrant .form-check-input:checked").val()
+        console.log(CornerPosition)
+        console.log(SelectQuadrant)
 
         var dieXsize = $("#DieX_size").val()
         var dieYsize = $("#DieY_size").val()
-            // console.log("X:" + $("#DieX_size").val())
-            // console.log("Y:" + $("#DieY_size").val())
 
-        draw(CornerPosition, dieXsize, dieYsize)
+        draw(CornerPosition, dieXsize, dieYsize, SelectQuadrant)
     })
 });
